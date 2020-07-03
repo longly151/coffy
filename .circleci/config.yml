@@ -1,0 +1,110 @@
+version: 2
+jobs:
+  lint_tests:
+    docker:
+      - image: node:8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+            npm install mkdirp@latest
+      - run:
+          name: Test consistent coding style (Lint)
+          command: npm run watch:lint
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+  integration_tests:
+    docker:
+      - image: node:8
+      - image: circleci/postgres:11-alpine
+        environment:
+          POSTGRES_DB: circleci
+          POSTGRES_USER: circleci
+          POSTGRES_PASSWORD: password
+    environment:
+      DATABASE_URL_TESTING: postgres://circleci:password@localhost:5432/circleci
+      APP_DOMAIN: mg.sgroup.ga
+      MAILGUN_APIKEY: 6fbe48c43287c22277241ed66f8ad3c6-f696beb4-86a8b6f2
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Integration testing
+          command: npm run test:integration
+
+  build:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/sanna-tour-backend
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "35:d1:fa:da:69:61:6e:a8:f2:d0:b9:8b:3a:01:48:7f"
+      - checkout:
+      - run:
+          name: Setup
+          command: |
+            npm install
+            npm run build
+            ssh-keyscan 159.65.15.71 >> ~/.ssh/known_hosts
+      - persist_to_workspace:
+          root: /home/circleci
+          paths: sanna-tour-backend
+
+  deploy:
+    machine:
+      enabled: true
+    working_directory: /home/circleci/
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Deploy Over SSH
+          command: |
+            cd sanna-tour-backend
+            chmod 777 ./.circleci/deploy.sh
+            ./.circleci/deploy.sh
+        
+workflows:
+  version: 2
+  # tests:
+  #   jobs:
+  #     - lint_tests:
+  #         filters:
+  #           branches:
+  #             ignore:
+  #               - dev
+  #               - master
+  #     - integration_tests:
+  #         requires:
+  #           - lint_tests
+  #         filters:
+  #           branches:
+  #             ignore:
+  #               - dev
+  #               - master
+
+  build-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: staging
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: staging

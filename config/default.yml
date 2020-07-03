@@ -1,0 +1,18 @@
+server:
+  port: 3000
+
+db:
+  host: '127.0.0.1'
+  port: 5432
+  type: 'postgres'
+  database: 'sannatour'
+  username: 'postgres'
+  password: 'admin'
+  synchronize: true
+
+bcrypt:
+  saltRounds: 10
+
+jwt: 
+  expiresIn: 5184000s
+  secret: 'abcd'
