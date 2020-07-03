@@ -30,11 +30,12 @@ async function bootstrap() {
   /**
    * Environment
    */
-  if (process.env.NODE_ENV === 'development') {
-    app.enableCors();
-  } else {
-    app.enableCors({ origin: serverConfig.origin });
-  }
+  app.enableCors();
+  // if (process.env.NODE_ENV === 'development') {
+  //   app.enableCors();
+  // } else {
+  //   app.enableCors({ origin: serverConfig.origin });
+  // }
 
   /**
    * Swagger
