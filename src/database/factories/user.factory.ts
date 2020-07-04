@@ -1,9 +1,9 @@
-import * as Faker from "faker";
-import { define } from "typeorm-seeding";
-import { Gender } from "../../common/enums/gender.enum";
-import { User } from "../../app/User/user.entity";
-import { enumToArray } from "../../core/utils/helper";
-import { UserStatus } from "../../common/enums/userStatus.enum";
+import * as Faker from 'faker';
+import { define } from 'typeorm-seeding';
+import { Gender } from '../../common/enums/gender.enum';
+import { User } from '../../app/User/user.entity';
+import { enumToArray } from '../../core/utils/helper';
+import { UserStatus } from '../../common/enums/userStatus.enum';
 
 define(User, (faker: typeof Faker, context: { roles: string[] }) => {
   const fullName = faker.name.findName();
@@ -12,7 +12,7 @@ define(User, (faker: typeof Faker, context: { roles: string[] }) => {
   const phoneNumber = faker.phone.phoneNumber();
   const avatar = faker.image.avatar();
   const gender = faker.random.arrayElement(enumToArray(Gender));
-  const birthday = faker.date.between("1975/01/01", "2010/01/01");
+  const birthday = faker.date.between('1975/01/01', '2010/01/01');
   const bio = faker.lorem.paragraph();
   const note = faker.lorem.paragraph();
   const status = faker.random.arrayElement(enumToArray(UserStatus));

@@ -9,19 +9,19 @@ import {
   HttpStatus,
   ForbiddenException,
   InternalServerErrorException,
-  BadRequestException,
-} from "@nestjs/common";
-import { CrudController, Override } from "@nestjsx/crud";
-import { ApiOperation } from "@nestjs/swagger";
-import { ACL } from "@src/common/decorators/acl.decorator";
-import { AccessControlList } from "@src/common/enums/accessControlList";
-import { CurrentUser } from "@src/common/decorators/currentUser.decorator";
-import { intersectPermission } from "@src/core/utils/appHelper";
-import * as _ from "lodash";
-import { BaseRepository } from "../Repository/index.repository";
+  BadRequestException
+} from '@nestjs/common';
+import { CrudController, Override } from '@nestjsx/crud';
+import { ApiOperation } from '@nestjs/swagger';
+import { ACL } from '@src/common/decorators/acl.decorator';
+import { AccessControlList } from '@src/common/enums/accessControlList';
+import { CurrentUser } from '@src/common/decorators/currentUser.decorator';
+import { intersectPermission } from '@src/core/utils/appHelper';
+import * as _ from 'lodash';
+import { BaseRepository } from '../Repository/index.repository';
 
 export class BaseController<T> implements CrudController<T> {
-  service: import("@nestjsx/crud").CrudService<T>;
+  service: import('@nestjsx/crud').CrudService<T>;
 
   constructor(private readonly baseRepository: BaseRepository<T>) {}
 
@@ -30,13 +30,13 @@ export class BaseController<T> implements CrudController<T> {
   }
 
   handleSelfPermissionOrFail(
-    action: "READ" | "DELETE" | "PERMANENTLY_DELETE",
+    action: 'READ' | 'DELETE' | 'PERMANENTLY_DELETE',
     result: any,
     user: any
   ): boolean {
     const highPermission = [
-      "ALL",
-      `${_.toUpper(this.baseRepository.metadata.targetName)}_${action}`,
+      'ALL',
+      `${_.toUpper(this.baseRepository.metadata.targetName)}_${action}`
     ];
     const requiredPermission = `SELF_${_.toUpper(
       this.baseRepository.metadata.targetName
@@ -52,9 +52,9 @@ export class BaseController<T> implements CrudController<T> {
     return false;
   }
 
-  @Get("trashed")
+  @Get('trashed')
   @ACL(AccessControlList.DEFAULT)
-  @ApiOperation({ summary: "Get deleted Record" })
+  @ApiOperation({ summary: 'Get deleted Record' })
   async getTrashed(@CurrentUser() user: any): Promise<any> {
     // SELF_${BASE}_READ
     const highPermission = `${_.toUpper(
@@ -79,25 +79,25 @@ export class BaseController<T> implements CrudController<T> {
 
     // Remove password field
     if (!_.isEmpty(result)) {
-      if (_.has(result[0], "password")) {
+      if (_.has(result[0], 'password')) {
         result = _.map(result, (item: any) => {
-          return _.omit(item, ["password"]);
+          return _.omit(item, ['password']);
         });
       }
     }
     return result;
   }
 
-  @ApiOperation({ summary: "Soft delete one record " })
+  @ApiOperation({ summary: 'Soft delete one record ' })
   @ACL(AccessControlList.DEFAULT)
-  @Override("deleteOneBase")
-  @Delete(":id")
+  @Override('deleteOneBase')
+  @Delete(':id')
   async softDelete(
-    @Param("id", ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: any
   ): Promise<void> {
     const result = await this.baseRepository.findOne(id);
-    if (this.handleSelfPermissionOrFail("DELETE", result, user)) {
+    if (this.handleSelfPermissionOrFail('DELETE', result, user)) {
       if (!result)
         throw new NotFoundException(
           `${this.baseRepository.metadata.targetName} not found`
@@ -107,15 +107,15 @@ export class BaseController<T> implements CrudController<T> {
   }
 
   @ACL(AccessControlList.DEFAULT)
-  @Delete(":id/permanently")
-  @ApiOperation({ summary: "Permanently delete one record " })
+  @Delete(':id/permanently')
+  @ApiOperation({ summary: 'Permanently delete one record ' })
   async delete(
-    @Param("id", ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: any
   ): Promise<void> {
     const result = await this.baseRepository.findOne(id);
     const trashedResult = await this.baseRepository.getOneByIdWithTrashed(id);
-    if (this.handleSelfPermissionOrFail("PERMANENTLY_DELETE", result, user)) {
+    if (this.handleSelfPermissionOrFail('PERMANENTLY_DELETE', result, user)) {
       if (result)
         throw new BadRequestException(
           `Permanently Delete only effects on Deleted ${this.baseRepository.metadata.targetName}`
@@ -128,9 +128,9 @@ export class BaseController<T> implements CrudController<T> {
         try {
           await this.baseRepository.delete(id);
         } catch (error) {
-          if (error.code === "23503") {
+          if (error.code === '23503') {
             throw new InternalServerErrorException(
-              "Update or Delete violates foreign key constraint"
+              'Update or Delete violates foreign key constraint'
             );
           }
           throw new InternalServerErrorException();
@@ -140,15 +140,15 @@ export class BaseController<T> implements CrudController<T> {
   }
 
   @ACL(AccessControlList.DEFAULT)
-  @Patch(":id/restore")
-  @ApiOperation({ summary: "Restore one record " })
+  @Patch(':id/restore')
+  @ApiOperation({ summary: 'Restore one record ' })
   async restore(
-    @Param("id", ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: any
   ): Promise<void> {
     const result = await this.baseRepository.findOne(id);
     const trashedResult = await this.baseRepository.getOneByIdWithTrashed(id);
-    if (this.handleSelfPermissionOrFail("DELETE", result, user)) {
+    if (this.handleSelfPermissionOrFail('DELETE', result, user)) {
       if (!result && _.isEmpty(trashedResult))
         throw new NotFoundException(
           `${this.baseRepository.metadata.targetName} not found`
@@ -158,14 +158,14 @@ export class BaseController<T> implements CrudController<T> {
     }
   }
 
-  async GetOneBaseBySlug(@Param("slug") slug: string): Promise<T> {
+  async GetOneBaseBySlug(@Param('slug') slug: string): Promise<T> {
     return this.baseRepository.findOneBySlugOrFail(slug);
   }
 
   // @Get(':id')
   // @ApiOperation({ summary: 'Get one Record' })
-  @Override("getOneBase")
-  async GetOneBase(@Param("id", ParseIntPipe) id: number): Promise<T> {
+  @Override('getOneBase')
+  async GetOneBase(@Param('id', ParseIntPipe) id: number): Promise<T> {
     return this.baseRepository.findOneByIdOrFail(id);
   }
 }

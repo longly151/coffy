@@ -3,33 +3,33 @@ import {
   ParseIntPipe,
   BadRequestException,
   Get,
-  Param,
-} from "@nestjs/common";
+  Param
+} from '@nestjs/common';
 import {
   Override,
   ParsedRequest,
   CrudRequest,
   ParsedBody,
-  CreateManyDto,
-} from "@nestjsx/crud";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
-import { UseCrud } from "@src/common/decorators/crud.decorator";
-import { AccessControlList } from "@src/common/enums/accessControlList";
-import { ACL } from "@src/common/decorators/acl.decorator";
-import { getDeepFieldsFromCollection } from "@src/core/utils/helper";
-import { TreeBaseController } from "@src/app/Common/TreeBase/Controller/index.controller";
-import { CurrentUser } from "@src/common/decorators/currentUser.decorator";
-import { MyTreeExample } from "../myTreeExample.entity";
-import { MyTreeExampleService } from "../Service/index.service";
-import { MyTreeExampleRepository } from "../Repository/index.repository";
+  CreateManyDto
+} from '@nestjsx/crud';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { UseCrud } from '@src/common/decorators/crud.decorator';
+import { AccessControlList } from '@src/common/enums/accessControlList';
+import { ACL } from '@src/common/decorators/acl.decorator';
+import { getDeepFieldsFromCollection } from '@src/core/utils/helper';
+import { TreeBaseController } from '@src/app/Common/TreeBase/Controller/index.controller';
+import { CurrentUser } from '@src/common/decorators/currentUser.decorator';
+import { MyTreeExample } from '../myTreeExample.entity';
+import { MyTreeExampleService } from '../Service/index.service';
+import { MyTreeExampleRepository } from '../Repository/index.repository';
 
 @UseCrud(MyTreeExample, {
   routes: {
-    exclude: ["getManyBase", "getOneBase", "replaceOneBase", "deleteOneBase"],
-  },
+    exclude: ['getManyBase', 'getOneBase', 'replaceOneBase', 'deleteOneBase']
+  }
 })
-@ApiTags("my_tree_examples")
-@Controller("my_tree_examples")
+@ApiTags('my_tree_examples')
+@Controller('my_tree_examples')
 export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
   constructor(
     public service: MyTreeExampleService,
@@ -39,19 +39,19 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
   }
 
   /**
-   * GET MANY
+   * GET MANY (NO AUTH)
    * @param req CrudRequest
    */
   @Get()
-  @ApiOperation({ summary: "Retrieve many MyTreeExample" })
+  @ApiOperation({ summary: 'Retrieve many MyTreeExample' })
   async getMany() {
     // Find Tree
     const data = await this.repository.findTrees();
     // Get specific fields
     return getDeepFieldsFromCollection(
       data,
-      ["id", "name", "slug", "childrenItems"],
-      "childrenItems"
+      ['id', 'name', 'slug', 'childrenItems'],
+      'childrenItems'
     );
   }
 
@@ -59,8 +59,8 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * GET ROOTS
    * @param req CrudRequest
    */
-  @Get("roots")
-  @ApiOperation({ summary: "Retrieve many Root MyTreeExample" })
+  @Get('roots')
+  @ApiOperation({ summary: 'Retrieve many Root MyTreeExample' })
   async getManyRoot() {
     return this.service.getManyRoot();
   }
@@ -69,11 +69,11 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * GET CHILDREN
    * @param req CrudRequest
    */
-  @ApiOperation({ summary: "Retrieve many Children MyTreeExample" })
-  @Get(":id/children")
+  @ApiOperation({ summary: 'Retrieve many Children MyTreeExample' })
+  @Get(':id/children')
   async getChildren(
-    @Param("id", new ParseIntPipe())
-    id: number
+    @Param('id', new ParseIntPipe())
+      id: number
   ) {
     return this.service.getChildren(id);
   }
@@ -82,11 +82,11 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * GET PARENT
    * @param req CrudRequest
    */
-  @ApiOperation({ summary: "Retrieve One Parent MyTreeExample" })
-  @Get(":id/parents")
+  @ApiOperation({ summary: 'Retrieve One Parent MyTreeExample' })
+  @Get(':id/parents')
   async getParent(
-    @Param("id", new ParseIntPipe())
-    id: number
+    @Param('id', new ParseIntPipe())
+      id: number
   ) {
     return this.service.getParent(id);
   }
@@ -97,7 +97,7 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * @param dto MyTreeExample
    */
   @ACL(AccessControlList.DEFAULT)
-  @Override("createOneBase")
+  @Override('createOneBase')
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() dto: MyTreeExample
@@ -111,7 +111,7 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * @param req CrudRequest
    * @param dto MyTreeExample
    */
-  @Override("createManyBase")
+  @Override('createManyBase')
   @ACL(AccessControlList.DEFAULT)
   async createMany(
     @ParsedRequest() req: CrudRequest,
@@ -132,7 +132,7 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * @param dto UpdateMyTreeExampleDto
    * @param param
    */
-  @Override("updateOneBase")
+  @Override('updateOneBase')
   @ACL(AccessControlList.DEFAULT)
   async updateOne(@ParsedBody() dto: MyTreeExample, @Param() param) {
     const dbObject = await this.repository.findOneByIdOrFail(param.id);
@@ -140,10 +140,10 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
       throw new BadRequestException([
         {
           constraints: {
-            isEmpty: "parentId must be empty",
+            isEmpty: 'parentId must be empty'
           },
-          property: "parentId",
-        },
+          property: 'parentId'
+        }
       ]);
     }
     return this.service.saveObject(dbObject, dto);
@@ -153,10 +153,10 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * GET TRASH
    * @param user CurrentUser
    */
-  @Get("trashed")
+  @Get('trashed')
   @ACL(AccessControlList.DEFAULT)
-  @ApiOperation({ summary: "Get deleted Record" })
-  async getOverrideTrashed(@CurrentUser() user: any): Promise<any> {
+  @ApiOperation({ summary: 'Get deleted Record' })
+  async getTrashedOverride(@CurrentUser() user: any): Promise<any> {
     return this.getTrashed(user);
   }
 
@@ -165,10 +165,10 @@ export class MyTreeExampleController extends TreeBaseController<MyTreeExample> {
    * @param id Param
    * @param user CurrentUser
    */
-  @ApiOperation({ summary: "Get one Record" })
-  @Override("getOneBase")
-  @Get(":id")
-  async GetOne(@Param("id", ParseIntPipe) id: number): Promise<MyTreeExample> {
+  @ApiOperation({ summary: 'Get one Record' })
+  @Override('getOneBase')
+  @Get(':id')
+  async GetOne(@Param('id', ParseIntPipe) id: number): Promise<MyTreeExample> {
     return this.GetOneBase(id);
   }
 }

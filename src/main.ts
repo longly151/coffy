@@ -13,7 +13,6 @@ import { UserRole } from './app/Role/Enum/userRole.enum';
 import { ValidationPipe } from './common/pipes/validation.pipe';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { typeOrmConfig } from './config/typeorm.config';
-import { Destination } from './app/Destination/destination.entity';
 
 require('dotenv').config();
 
@@ -98,7 +97,7 @@ async function bootstrap() {
   // await categoryRepository.softRemove(await categoryRepository.findRoots());
 
   // const connection: Connection = getConnection();
-  // const destinationRepository = connection.getTreeRepository(Destination);
+  // const destinationRepository = connection.getTreeRepository(Post);
   // const tree = await destinationRepository.findTrees();
   // console.log('demo', tree[4].childrenItems[0]);
 }

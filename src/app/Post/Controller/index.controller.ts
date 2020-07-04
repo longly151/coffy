@@ -6,21 +6,21 @@ import { ACL } from '@src/common/decorators/acl.decorator';
 import { AccessControlList } from '@src/common/enums/accessControlList';
 import { CurrentUser } from '@src/common/decorators/currentUser.decorator';
 import { Override, ParsedRequest, CrudRequest } from '@nestjsx/crud';
-import { MyExampleRepository } from '../Repository/index.repository';
-import { MyExampleService } from '../Service/index.service';
-import { MyExample } from '../myExample.entity';
+import { PostRepository } from '../Repository/index.repository';
+import { PostService } from '../Service/index.service';
+import { Post } from '../post.entity';
 
-@UseCrud(MyExample, {
+@UseCrud(Post, {
   routes: {
     exclude: ['getOneBase', 'deleteOneBase']
   }
 })
-@ApiTags('my_examples')
-@Controller('my_examples')
-export class MyExampleController extends BaseController<MyExample> {
+@ApiTags('posts')
+@Controller('posts')
+export class PostController extends BaseController<Post> {
   constructor(
-    public service: MyExampleService,
-    private readonly repository: MyExampleRepository
+    public service: PostService,
+    private readonly repository: PostRepository
   ) {
     super(repository);
   }
@@ -55,10 +55,9 @@ export class MyExampleController extends BaseController<MyExample> {
    * @param user CurrentUser
    */
   @ApiOperation({ summary: 'Get one Record' })
-  @ACL(AccessControlList.DEFAULT)
   @Override('getOneBase')
   @Get(':id')
-  async GetOne(@Param('id', ParseIntPipe) id: number): Promise<MyExample> {
+  async GetOne(@Param('id', ParseIntPipe) id: number): Promise<Post> {
     return this.GetOneBase(id);
   }
 }
