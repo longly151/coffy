@@ -7,7 +7,7 @@ import { UserModule } from './app/User/user.module';
 import { CoreModule } from './core/core.module';
 import { RoleModule } from './app/Role/role.module';
 import { PermissionModule } from './app/Permission/permission.module';
-// import { PostModule } from './app/Post/post.module';
+import { PostModule } from './app/Post/post.module';
 
 @Module({
   imports: [
@@ -16,8 +16,8 @@ import { PermissionModule } from './app/Permission/permission.module';
     AuthModule,
     PermissionModule,
     RoleModule,
-    UserModule
-    // PostModule
+    UserModule,
+    PostModule
   ],
   controllers: [AppController]
 })
