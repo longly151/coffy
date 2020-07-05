@@ -6,7 +6,6 @@ import {
   SwaggerCustomOptions
 } from '@nestjs/swagger';
 import * as config from 'config';
-import { createConnection, getConnection, Connection } from 'typeorm';
 import { AppModule } from './app.module';
 
 import { UserRole } from './app/Role/Enum/userRole.enum';
