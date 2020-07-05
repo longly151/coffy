@@ -15,7 +15,7 @@ import { PostModule } from './app/Post/post.module';
     CoreModule,
     AuthModule,
     PermissionModule,
-    // RoleModule,
+    RoleModule,
     UserModule,
     PostModule
   ],
