@@ -47,7 +47,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:12
-    working_directory: ~/sanna-tour-backend
+    working_directory: ~/coffy
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -61,7 +61,7 @@ jobs:
             ssh-keyscan 3.23.87.196 >> ~/.ssh/known_hosts
       - persist_to_workspace:
           root: /home/circleci
-          paths: sanna-tour-backend
+          paths: coffy
 
   deploy:
     machine:
@@ -73,7 +73,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            cd sanna-tour-backend
+            cd coffy
             chmod 777 ./.circleci/deploy.sh
             ./.circleci/deploy.sh
         
