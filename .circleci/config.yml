@@ -73,8 +73,8 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            cd coffy
-            chmod 777 ./.circleci/deploy.sh
+            # cd coffy
+            # chmod 777 ./.circleci/deploy.sh
             ./.circleci/deploy.sh
         
 workflows:
