@@ -98,10 +98,10 @@ workflows:
 
   build-and-deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: staging
+      # - build:
+      #     filters:
+      #       branches:
+      #         only: staging
       - deploy:
           requires:
             - build
