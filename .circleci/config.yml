@@ -103,8 +103,8 @@ workflows:
       #       branches:
       #         only: staging
       - deploy:
-          requires:
-            - build
+          # requires:
+          #   - build
           filters:
             branches:
               only: staging
