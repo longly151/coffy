@@ -46,6 +46,7 @@ export class AuthService {
         table: 'users',
         idForeignKey: 'userId'
       }),
+      id: payload.id,
       email: payload.email,
       fullName: payload.fullName,
       phone: payload.phone,
