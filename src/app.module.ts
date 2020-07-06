@@ -14,7 +14,7 @@ import { PostModule } from './app/Post/post.module';
     TypeOrmModule.forRoot(typeOrmConfig),
     CoreModule,
     AuthModule,
-    // PermissionModule,
+    PermissionModule,
     RoleModule,
     UserModule,
     PostModule
