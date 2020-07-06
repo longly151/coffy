@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import * as _ from "lodash";
-import { getValueOfKeyFromCollection } from "@src/core/utils/helper";
-import { getManager } from "typeorm";
-import { UserRepository } from "@src/app/User/Repository/index.repository";
-import Bcrypt from "../../../plugins/bcrypt.plugin";
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as _ from 'lodash';
+import { getValueOfKeyFromCollection } from '@src/core/utils/helper';
+import { getManager } from 'typeorm';
+import { UserRepository } from '@src/app/User/Repository/index.repository';
+import Bcrypt from '../../../plugins/bcrypt.plugin';
 @Injectable()
 export class AuthService {
   constructor(
@@ -27,7 +27,7 @@ export class AuthService {
     const payload = await this.validateUser(user.email, user.password);
     const permissions = getValueOfKeyFromCollection(
       payload.role.permissions,
-      "name"
+      'name'
     );
     return {
       token: this.jwtService.sign({
@@ -43,9 +43,14 @@ export class AuthService {
         status: payload.status,
         role: payload.role.name,
         permissions,
-        table: "users",
-        idForeignKey: "userId",
+        table: 'users',
+        idForeignKey: 'userId'
       }),
+      email: payload.email,
+      fullName: payload.fullName,
+      phone: payload.phone,
+      avatar: payload.avatar,
+      role: payload.role.name
     };
   }
 }
