@@ -73,9 +73,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            # cd coffy
-            # chmod 777 ./.circleci/deploy.sh
-            ./.circleci/deploy.sh
+            ssh ubuntu@3.23.87.196 "cd /home/coffy && git pull origin staging && npm install && npm run build && pm2 update && exit"
         
 workflows:
   version: 2
