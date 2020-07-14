@@ -17,7 +17,8 @@ import {
   IsInt,
   IsString,
   IsBoolean,
-  IsDate
+  IsDate,
+  IsDateString
 } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
 import { ApiProperty } from '@nestjs/swagger';
@@ -88,10 +89,10 @@ export class User extends Base {
   })
   gender: string;
 
-  @ApiProperty({ example: '1999/12/31' })
+  @ApiProperty({ example: '2011-10-05T14:48:00.000Z' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
-  @IsDate()
+  @IsDateString()
   @Column()
   birthday: Date;
 
