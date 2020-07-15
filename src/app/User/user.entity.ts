@@ -99,13 +99,13 @@ export class User extends Base {
   @ApiProperty({ example: 'Hello there' })
   @IsOptional()
   @IsString()
-  @Column()
+  @Column({ nullable: true })
   bio: string;
 
   @ApiProperty({ example: 'Note something' })
   @IsOptional()
   @IsString()
-  @Column()
+  @Column({ nullable: true })
   note: string;
 
   @ApiProperty({ example: 'ACTIVE' })

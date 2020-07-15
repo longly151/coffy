@@ -3,9 +3,9 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  InternalServerErrorException,
-} from "@nestjs/common";
-import * as _ from "lodash";
+  InternalServerErrorException
+} from '@nestjs/common';
+import * as _ from 'lodash';
 /**
  * Handle Error (After getting error from vaidation.pipe)
  */
@@ -24,17 +24,17 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
       _.isArray(exceptionResponse.message)
     ) {
       const newMessage = await exceptionResponse.message.map((element: any) => {
-        if (_.includes(element, " should not be empty")) {
+        if (_.includes(element, ' should not be empty')) {
           const currentObjectName = _.replace(
             element,
-            " should not be empty",
-            ""
+            ' should not be empty',
+            ''
           );
           return {
             constraints: {
-              isNotEmpty: element,
+              isNotEmpty: element
             },
-            property: currentObjectName,
+            property: currentObjectName
           };
         }
         return element;
@@ -53,33 +53,33 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     // Get Custom Message
     const customMessage = exceptionResponse.error
       ? exceptionResponse.message
-      : "";
+      : '';
 
     switch (statusCode) {
-      case 401:
-        response.status(statusCode).json({
-          statusCode,
-          message: customMessage || "Missing authentication",
-          error: "Unauthorized",
-        });
-        break;
-      case 403:
-        response.status(statusCode).json({
-          statusCode,
-          message: customMessage || "Forbidden resource",
-          error: "Forbidden",
-        });
-        break;
-      case 500:
-        response.status(statusCode).json({
-          statusCode,
-          message: customMessage || "An internal server error occurred",
-          error: "Internal Server Error",
-        });
-        break;
-      default:
-        response.status(statusCode).json(exception.getResponse());
-        break;
+    case 401:
+      response.status(statusCode).json({
+        statusCode,
+        message: customMessage || 'Missing authentication',
+        error: 'Unauthorized'
+      });
+      break;
+    case 403:
+      response.status(statusCode).json({
+        statusCode,
+        message: customMessage || 'Forbidden resource',
+        error: 'Forbidden'
+      });
+      break;
+    case 500:
+      response.status(statusCode).json({
+        statusCode,
+        message: customMessage || 'An internal server error occurred',
+        error: 'Internal Server Error'
+      });
+      break;
+    default:
+      response.status(statusCode).json(exception.getResponse());
+      break;
     }
   }
 }
