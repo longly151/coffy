@@ -7,8 +7,8 @@ import {
   BeforeUpdate,
   Unique,
   JoinColumn,
-  OneToMany,
-} from "typeorm";
+  OneToMany
+} from 'typeorm';
 import {
   IsOptional,
   IsNotEmpty,
@@ -18,42 +18,43 @@ import {
   IsString,
   IsBoolean,
   IsDate,
-} from "class-validator";
-import { CrudValidationGroups } from "@nestjsx/crud";
-import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
-import { UserRole } from "../Role/Enum/userRole.enum";
-import Bcrypt from "../../plugins/bcrypt.plugin";
-import { Role } from "../Role/role.entity";
-import { UserStatus } from "../../common/enums/userStatus.enum";
-import { Base } from "../Common/Base/base.entity";
-import { enumToArray } from "../../core/utils/helper";
-import { Gender } from "../../common/enums/gender.enum";
+  IsDateString
+} from 'class-validator';
+import { CrudValidationGroups } from '@nestjsx/crud';
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { UserRole } from '../Role/Enum/userRole.enum';
+import Bcrypt from '../../plugins/bcrypt.plugin';
+import { Role } from '../Role/role.entity';
+import { UserStatus } from '../../common/enums/userStatus.enum';
+import { Base } from '../Common/Base/base.entity';
+import { enumToArray } from '../../core/utils/helper';
+import { Gender } from '../../common/enums/gender.enum';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
-@Entity("users")
-@Unique(["email"])
+@Entity('users')
+@Unique(['email'])
 export class User extends Base {
   @ApiProperty({ readOnly: true })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ example: "Admin" })
+  @ApiProperty({ example: 'Admin' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
   @IsString()
   @Column()
   fullName: string;
 
-  @ApiProperty({ example: "member@gmail.com" })
+  @ApiProperty({ example: 'member@gmail.com' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
   @IsEmail()
   @Column()
   email: string;
 
-  @ApiProperty({ example: "admin" })
+  @ApiProperty({ example: 'admin' })
   @ApiProperty({ writeOnly: true })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
@@ -61,7 +62,7 @@ export class User extends Base {
   @Column()
   password: string;
 
-  @ApiProperty({ example: "0371627261" })
+  @ApiProperty({ example: '0371627261' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
   @IsString()
@@ -70,7 +71,7 @@ export class User extends Base {
 
   @ApiProperty({
     example:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRlUbAyS_643dq_B69jZAlPNW6_Xc7SLELY6SpRsc5OI2wHiiYG&usqp=CAU",
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRlUbAyS_643dq_B69jZAlPNW6_Xc7SLELY6SpRsc5OI2wHiiYG&usqp=CAU'
   })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
@@ -78,48 +79,49 @@ export class User extends Base {
   @Column()
   avatar: string;
 
-  @ApiProperty({ example: "MALE" })
+  @ApiProperty({ example: 'MALE' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
   @IsIn(enumToArray(Gender))
   @Column({
-    type: "enum",
-    enum: Gender,
+    type: 'enum',
+    enum: Gender
   })
   gender: string;
 
-  @ApiProperty({ example: "1999/12/31" })
+  @ApiProperty({ example: '2011-10-05T14:48:00.000Z' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
-  @IsDate()
+  @IsDateString()
   @Column()
   birthday: Date;
 
-  @ApiProperty({ example: "Hello there" })
+  @ApiProperty({ example: 'Hello there' })
   @IsOptional()
   @IsString()
-  @Column()
+  @Column({ nullable: true })
   bio: string;
 
-  @ApiProperty({ example: "Note something" })
+  @ApiProperty({ example: 'Note something' })
   @IsOptional()
   @IsString()
-  @Column()
+  @Column({ nullable: true })
   note: string;
 
-  @ApiProperty({ example: "ACTIVE" })
+  @ApiProperty({ example: 'ACTIVE' })
   @IsOptional({ groups: [UPDATE] })
   @IsNotEmpty({ groups: [CREATE] })
   @IsIn(enumToArray(UserStatus))
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: UserStatus,
-    default: UserStatus.ACTIVE,
+    default: UserStatus.ACTIVE
   })
   status: string;
 
   @Exclude()
   @ApiProperty({ readOnly: true, writeOnly: true })
+  @IsOptional()
   @IsBoolean()
   @Column({ default: false })
   hasExpiredToken: boolean;
@@ -129,7 +131,7 @@ export class User extends Base {
    */
   @ApiProperty({ readOnly: true })
   @ManyToOne((type) => Role, (role) => role.users, { eager: true })
-  @JoinColumn({ name: "roleId" })
+  @JoinColumn({ name: 'roleId' })
   role: Role;
 
   @ApiProperty({ example: 2 })
