@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
-import { PermissionRepository } from "@src/app/Permission/Repository/index.repository";
-import { UserRepository } from "@src/app/User/Repository/index.repository";
-import { RoleRepository } from "../Repository/index.repository";
-import { Role } from "../role.entity";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { PermissionRepository } from '@app/Permission/Repository/index.repository';
+import { UserRepository } from '@app/User/Repository/index.repository';
+import { RoleRepository } from '../Repository/index.repository';
+import { Role } from '../index.entity';
 
 @Injectable()
 export class RoleService extends TypeOrmCrudService<Role> {
@@ -29,7 +29,7 @@ export class RoleService extends TypeOrmCrudService<Role> {
 
     // Set hasExpiredToken of Users which have current Role into TRUE
     const affectedUsers = await this.userRepository.find({
-      roleId: dbObject.id,
+      roleId: dbObject.id
     });
     await Promise.all(
       affectedUsers.map((element) => {

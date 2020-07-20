@@ -2,11 +2,9 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor,
-} from "@nestjs/common";
-import { Observable } from "rxjs";
-import { timeout } from "rxjs/operators";
-import * as _ from "lodash";
+  NestInterceptor
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthorFilterInterceptor implements NestInterceptor {
@@ -14,11 +12,12 @@ export class AuthorFilterInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const currentUser = request.user;
     const { idForeignKey } = currentUser;
+
     const filterObj = { [idForeignKey]: { eq: currentUser.id } };
     request.NESTJSX_PARSED_CRUD_REQUEST_KEY.parsed.filter.push({
       field: `${currentUser.idForeignKey}`,
-      operator: "eq",
-      value: currentUser.id,
+      operator: 'eq',
+      value: currentUser.id
     });
     request.NESTJSX_PARSED_CRUD_REQUEST_KEY.parsed.search.$and.push(filterObj);
     return next.handle();

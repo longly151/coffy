@@ -1,28 +1,35 @@
 import {
   Controller,
-  Get,
   Param,
   ParseIntPipe,
-  BadRequestException
+  BadRequestException,
+  Post,
+  Patch
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { BaseController } from '@src/app/Common/Base/Controller/index.controller';
-import { UseCrud } from '@src/common/decorators/crud.decorator';
-import { CurrentUser } from '@src/common/decorators/currentUser.decorator';
-import { AccessControlList } from '@src/common/enums/accessControlList';
-import { ACL } from '@src/common/decorators/acl.decorator';
-import {
-  Override,
-  ParsedRequest,
-  ParsedBody,
-  CrudRequest
-} from '@nestjsx/crud';
-import { UserRepository } from '@src/app/User/Repository/index.repository';
+import { BaseController } from '@app/Common/Base/Controller/index.controller';
+import { UseCrud } from '@common/decorators/crud.decorator';
+import { Name } from '@common/decorators/crudName.decorator';
+import { ParsedBody } from '@nestjsx/crud';
+import { UserRepository } from '@app/User/Repository/index.repository';
+import { CrudName } from '@common/enums/crudName.enum';
+import { ApplyAuth } from '@common/decorators/applyAuth.decorator';
 import { RoleRepository } from '../Repository/index.repository';
 import { RoleService } from '../Service/index.service';
-import { Role } from '../role.entity';
+import { Role } from '../index.entity';
 
+@ApplyAuth(CrudName.ALL)
 @UseCrud(Role, {
+  routes: {
+    exclude: [
+      'getOneBase',
+      'createOneBase',
+      'createManyBase',
+      'updateOneBase',
+      'replaceOneBase',
+      'deleteOneBase'
+    ]
+  },
   query: {
     join: {
       permissions: {
@@ -48,37 +55,14 @@ export class RoleController extends BaseController<Role> {
    */
 
   /**
-   * GET TRASH
-   * @param user CurrentUser
-   */
-  @Get('trashed')
-  @ACL(AccessControlList.DEFAULT)
-  @ApiOperation({ summary: 'Get deleted Record' })
-  async getTrashedOverride(@CurrentUser() user: any): Promise<any> {
-    return this.getTrashed(user);
-  }
-
-  /**
-   * GET ONE
-   * @param id Param
-   * @param user CurrentUser
-   */
-  @ApiOperation({ summary: 'Get one Record' })
-  @ACL(AccessControlList.DEFAULT)
-  @Override('getOneBase')
-  @Get(':id')
-  async GetOne(@Param('id', ParseIntPipe) id: number): Promise<Role> {
-    return this.GetOneBase(id);
-  }
-
-  /**
    * CREATE ONE
    * @param req CrudRequest
-   * @param dto Post
+   * @param dto Destination
    */
-  @ACL(AccessControlList.DEFAULT)
-  @Override('createOneBase')
-  async createOne(@ParsedBody() dto: Role) {
+  @Name(CrudName.CREATE_ONE)
+  @ApiOperation({ summary: 'Create one Role ' })
+  @Post()
+  async createOneRole(@ParsedBody() dto: Role) {
     const dbObject = new Role();
     return this.service.saveObject(dbObject, dto);
   }
@@ -88,9 +72,10 @@ export class RoleController extends BaseController<Role> {
    * @param dto Role
    * @param id Param
    */
-  @ACL(AccessControlList.DEFAULT)
-  @Override('updateOneBase')
-  async updateOne(
+  @Name(CrudName.UPDATE_ONE)
+  @ApiOperation({ summary: 'Update one Role ' })
+  @Patch(':id')
+  async updateOneRole(
     @ParsedBody() dto: Role,
     @Param('id', ParseIntPipe) id: number
   ) {

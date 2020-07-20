@@ -26,7 +26,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'indent': ['warn', 2],
+    'indent': ['warn', 2, {"SwitchCase": 1}],
     'eol-last': ['warn', 'always'],
     'lines-between-class-members': ['warn', 'always'],
     'comma-dangle': ['warn', 'never'],

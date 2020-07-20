@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "allowJs": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -11,10 +12,20 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "paths": {                                /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
-      "@src/*": ["./src/*"]
+      "@base/*": ["./src/app/Common/Base/*"],
+      "@treebase/*": ["./src/app/Common/TreeBase/*"],
+      "@app/*": ["./src/app/*"],
+      "@common/*": ["./src/common/*"],
+      "@config/*": ["./src/config/*"],
+      "@core/*": ["./src/core/*"],
+      "@database/*": ["./src/database/*"],
+      "@plugins/*": ["./src/plugins/*"],
+      "@src/*": ["./src/*"],
     },
   },
   "include": ["src/**/*", "ormconfig.js"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/app/MyExample", "src/app/MyTreeExample"]
 }

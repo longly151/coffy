@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from './config/typeorm.config';
-import { AppController } from './app.controller';
-import { AuthModule } from './app/Auth/auth.module';
-import { UserModule } from './app/User/user.module';
+import { AuthModule } from '@app/Auth/index.module';
+import { UserModule } from '@app/User/index.module';
+import { RoleModule } from '@app/Role/index.module';
+import { PermissionModule } from '@app/Permission/index.module';
+import { MediaModule } from '@app/Media/index.module';
+import { PostModule } from '@app/Post/index.module';
+import { CategoryModule } from '@app/Category/index.module';
 import { CoreModule } from './core/core.module';
-import { RoleModule } from './app/Role/role.module';
-import { PermissionModule } from './app/Permission/permission.module';
-import { PostModule } from './app/Post/post.module';
+import { AppController } from './app.controller';
+import { typeOrmConfig } from './config/typeorm.config';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { PostModule } from './app/Post/post.module';
     PermissionModule,
     RoleModule,
     UserModule,
+    MediaModule,
+    CategoryModule,
     PostModule
   ],
   controllers: [AppController]

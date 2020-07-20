@@ -1,6 +1,7 @@
 /**
  * This file is only used for seeding purpose
  */
+const seedingFolderName = process.env.NODE_ENV ? `seeds-${process.env.NODE_ENV}` : 'seeds-development';
 module.exports = [
   {
     'name': 'default',
@@ -12,6 +13,6 @@ module.exports = [
     'password': process.env.RDS_PASSWORD,
     'entities': ['src/**/*.entity{.ts,.js}'],
     'factories': ['src/database/factories/**/*.factory{.ts,.js}'],
-    'seeds': ['src/database/seeds/**/*.seed{.ts,.js}']
+    'seeds': [`src/database/${seedingFolderName}/**/*.seed{.ts,.js}`]
   }
 ];
