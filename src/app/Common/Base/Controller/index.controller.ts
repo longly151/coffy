@@ -1,3 +1,4 @@
+import { CrudName } from '@common/enums/crudName.enum';
 import {
   Delete,
   ParseIntPipe,
@@ -9,21 +10,22 @@ import {
   HttpStatus,
   ForbiddenException,
   InternalServerErrorException,
-  BadRequestException
+  BadRequestException,
+  ConflictException
 } from '@nestjs/common';
-import { CrudController, Override } from '@nestjsx/crud';
+import { CrudController, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
 import { ApiOperation } from '@nestjs/swagger';
-import { ACL } from '@src/common/decorators/acl.decorator';
-import { AccessControlList } from '@src/common/enums/accessControlList';
-import { CurrentUser } from '@src/common/decorators/currentUser.decorator';
-import { intersectPermission } from '@src/core/utils/appHelper';
-import * as _ from 'lodash';
+import { Name } from '@common/decorators/crudName.decorator';
+import { CurrentUser } from '@common/decorators/currentUser.decorator';
+import { intersectPermission, extractExistedKey } from '@core/utils/appHelper';
+import _ from 'lodash';
+import { AccessControlList } from '@common/enums/accessControlList.enum';
 import { BaseRepository } from '../Repository/index.repository';
 
 export class BaseController<T> implements CrudController<T> {
   service: import('@nestjsx/crud').CrudService<T>;
 
-  constructor(private readonly baseRepository: BaseRepository<T>) {}
+  constructor(protected readonly baseRepository: BaseRepository<T>) {}
 
   get base(): CrudController<T> {
     return this;
@@ -34,14 +36,16 @@ export class BaseController<T> implements CrudController<T> {
     result: any,
     user: any
   ): boolean {
-    const highPermission = [
+    if(!user) return true;
+
+    const higherPermission = [
       'ALL',
       `${_.toUpper(this.baseRepository.metadata.targetName)}_${action}`
     ];
     const requiredPermission = `SELF_${_.toUpper(
       this.baseRepository.metadata.targetName
     )}_${action}`;
-    if (intersectPermission(user.permissions, highPermission)) return true;
+    if (intersectPermission(user.permissions, higherPermission)) return true;
     if (intersectPermission(user.permissions, requiredPermission)) {
       if (result[user.idForeignKey] !== user.id) {
         throw new ForbiddenException();
@@ -52,31 +56,31 @@ export class BaseController<T> implements CrudController<T> {
     return false;
   }
 
+  @Name(CrudName.GET_TRASHED)
   @Get('trashed')
-  @ACL(AccessControlList.DEFAULT)
   @ApiOperation({ summary: 'Get deleted Record' })
   async getTrashed(@CurrentUser() user: any): Promise<any> {
-    // SELF_${BASE}_READ
-    const highPermission = `${_.toUpper(
-      this.baseRepository.metadata.targetName
-    )}_READ`;
-    const requiredPermission = `SELF_${_.toUpper(
-      this.baseRepository.metadata.targetName
-    )}_READ`;
     let result;
-    if (
-      !intersectPermission(user.permissions, highPermission) &&
-      intersectPermission(user.permissions, requiredPermission)
-    ) {
-      // handle SELF_${BASE}_READ
-      result = await this.baseRepository.getManyWithSelfTrashed(
-        user.id,
-        user.idForeignKey
-      );
-    } else {
-      result = await this.baseRepository.getManyWithTrashed();
+    if(!user || _.includes(user.permissions, AccessControlList.ALL)) result = await this.baseRepository.getManyWithTrashed();
+    else {
+      const higherPermission = `${_.toUpper(
+        this.baseRepository.metadata.targetName
+      )}_READ`;
+      const requiredPermission = `SELF_${_.toUpper(
+        this.baseRepository.metadata.targetName
+      )}_READ`;
+      if (intersectPermission(user.permissions, higherPermission)) {
+        result = await this.baseRepository.getManyWithTrashed();
+      } else if (
+        !intersectPermission(user.permissions, higherPermission) &&
+  intersectPermission(user.permissions, requiredPermission)) {
+        // handle SELF_${BASE}_READ
+        result = await this.baseRepository.getManyWithSelfTrashed(
+          user.id,
+          user.idForeignKey
+        );
+      }
     }
-
     // Remove password field
     if (!_.isEmpty(result)) {
       if (_.has(result[0], 'password')) {
@@ -88,9 +92,8 @@ export class BaseController<T> implements CrudController<T> {
     return result;
   }
 
+  @Name(CrudName.DELETE_ONE)
   @ApiOperation({ summary: 'Soft delete one record ' })
-  @ACL(AccessControlList.DEFAULT)
-  @Override('deleteOneBase')
   @Delete(':id')
   async softDelete(
     @Param('id', ParseIntPipe) id: number,
@@ -106,7 +109,7 @@ export class BaseController<T> implements CrudController<T> {
     }
   }
 
-  @ACL(AccessControlList.DEFAULT)
+  @Name(CrudName.DELETE_ONE_PERMANENTLY)
   @Delete(':id/permanently')
   @ApiOperation({ summary: 'Permanently delete one record ' })
   async delete(
@@ -139,7 +142,7 @@ export class BaseController<T> implements CrudController<T> {
     }
   }
 
-  @ACL(AccessControlList.DEFAULT)
+  @Name(CrudName.RESTORE_ONE)
   @Patch(':id/restore')
   @ApiOperation({ summary: 'Restore one record ' })
   async restore(
@@ -158,14 +161,96 @@ export class BaseController<T> implements CrudController<T> {
     }
   }
 
+  /**
+   * Override CRUD Method
+   */
+
+  @Name(CrudName.CREATE_ONE)
+  async createOneOverride(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: T) {
+    try {
+      const result = await this.base.createOneBase(req, dto);
+      return result;
+    } catch (error) {
+      let existedKey = '';
+      switch(error.code) {
+        case '23503':
+          existedKey = extractExistedKey(error.detail);
+          throw new ConflictException(`The value of ${existedKey} is not exists`);
+        case '23505':
+          existedKey = _.capitalize(extractExistedKey(error.detail));
+          throw new ConflictException(`${existedKey} already exists`);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Name(CrudName.UPDATE_ONE)
+  async updateOneOverride(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: T) {
+    try {
+      const result = await this.base.updateOneBase(req, dto);
+      return result;
+    } catch (error) {
+      let existedKey = '';
+      switch(error.code) {
+        case '23503':
+          existedKey = extractExistedKey(error.detail);
+          throw new ConflictException(`The value of ${existedKey} is not exists`);
+        case '23505':
+          existedKey = _.capitalize(extractExistedKey(error.detail));
+          throw new ConflictException(`${existedKey} already exists`);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  @Name(CrudName.CREATE_MANY)
+  async createManyOverride(
+    @ParsedRequest() req: CrudRequest,
+    @ParsedBody() dto: CreateManyDto<T>
+  ) {
+    try {
+      const result = await this.base.createManyBase(req, dto);
+      return result;
+    } catch (error) {
+      let existedKey = '';
+      switch(error.code) {
+        case '23503':
+          existedKey = extractExistedKey(error.detail);
+          throw new ConflictException(`The value of ${existedKey} is not exists`);
+        case '23505':
+          existedKey = _.capitalize(extractExistedKey(error.detail));
+          throw new ConflictException(`${existedKey} already exists`);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  /**
+   * Custom CRUD Base
+   */
+
+  @Name(CrudName.GET_ONE)
   async GetOneBaseBySlug(@Param('slug') slug: string): Promise<T> {
     return this.baseRepository.findOneBySlugOrFail(slug);
   }
 
-  // @Get(':id')
-  // @ApiOperation({ summary: 'Get one Record' })
-  @Override('getOneBase')
-  async GetOneBase(@Param('id', ParseIntPipe) id: number): Promise<T> {
-    return this.baseRepository.findOneByIdOrFail(id);
+  @Name(CrudName.GET_ONE)
+  @Get(':id')
+  @ApiOperation({ summary: 'Get one Record' })
+  async GetOneBase(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: any): Promise<T> {
+    const result: any = await this.baseRepository.findOneByIdOrFail(id);
+    if (this.handleSelfPermissionOrFail('READ', result, user)) {
+      // Remove password field
+      if (!_.isEmpty(result)) {
+        if (_.has(result, 'password')) {
+          return _.omit(result, ['password']);
+        }
+        return result;
+      }
+    }
+    return null;
   }
 }

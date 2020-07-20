@@ -3,12 +3,9 @@ import {
   BadRequestException,
   Injectable,
   PipeTransform,
-  Type,
-  InternalServerErrorException,
-} from "@nestjs/common";
-import { plainToClass } from "class-transformer";
-import { validate } from "class-validator";
-import * as _ from "lodash";
+  Type
+} from '@nestjs/common';
+import { getClientError } from '@src/core/utils/appHelper';
 
 /**
  * Change Error Message (Apply for Error Code = 400)
@@ -20,27 +17,9 @@ export class ValidationPipe implements PipeTransform<any> {
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
-
-    const object = plainToClass(metatype, value);
-
-    const errors = await validate(object);
-    const returnError = [];
-    if (_.has(value, "bulk")) {
-      // Multiple create
-      if (!_.isEmpty(errors)) {
-        const singleItemErrors = errors[0].children[0].children;
-        singleItemErrors.map((error: any) => {
-          returnError.push(_.pick(error, ["constraints", "property"]));
-        });
-      }
-    } else {
-      // Single create
-      errors.map((error: any) => {
-        returnError.push(_.pick(error, ["constraints", "property"]));
-      });
-    }
-    if (errors.length > 0) {
-      throw new BadRequestException(returnError);
+    const error = await getClientError(metatype, value);
+    if(error) {
+      throw new BadRequestException(error);
     }
     return value;
   }

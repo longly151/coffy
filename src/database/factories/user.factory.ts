@@ -1,9 +1,10 @@
-import * as Faker from 'faker';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import Faker from 'faker';
 import { define } from 'typeorm-seeding';
-import { Gender } from '../../common/enums/gender.enum';
-import { User } from '../../app/User/user.entity';
 import { enumToArray } from '../../core/utils/helper';
+import { User } from '../../app/User/index.entity';
 import { UserStatus } from '../../common/enums/userStatus.enum';
+import { Gender } from '../../common/enums/gender.enum';
 
 define(User, (faker: typeof Faker, context: { roles: string[] }) => {
   const fullName = faker.name.findName();

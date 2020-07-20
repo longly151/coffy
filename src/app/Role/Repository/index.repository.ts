@@ -1,12 +1,12 @@
-import { EntityRepository } from "typeorm";
-import { BaseRepository } from "@src/app/Common/Base/Repository/index.repository";
-import { UseCrud } from "@src/common/decorators/crud.decorator";
-import { Role } from "../role.entity";
+import { EntityRepository } from 'typeorm';
+import { BaseRepository } from '@app/Common/Base/Repository/index.repository';
+import { UseCrud } from '@common/decorators/crud.decorator';
+import { Role } from '../index.entity';
 
 @UseCrud(Role, {
   routes: {
-    exclude: ["getOneBase", "deleteOneBase"],
-  },
+    exclude: ['getOneBase', 'deleteOneBase']
+  }
   // query: {
   //   exclude: ['password'],
   //   join: {

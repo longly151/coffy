@@ -1,7 +1,6 @@
-import * as _ from "lodash";
-
-// const slug = require('slug');
-import * as slug from "slug";
+import _ from 'lodash';
+import slug from 'slug';
+import moment from 'moment';
 
 export function enumToArray(enumme) {
   return Object.keys(enumme).map((key) => enumme[key]);
@@ -55,3 +54,5 @@ export const getDeepFieldsFromCollection = (
 };
 
 export const createSlug = (data: string) => slug(data, { locale: "vi" });
+
+export const createSlugWithDateTime = (data: string) => `${createSlug(data)}-${moment().format('YYYYMMDDHHmmssSS')}`

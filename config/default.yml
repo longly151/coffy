@@ -15,4 +15,11 @@ bcrypt:
 
 jwt: 
   expiresIn: 5184000s
-  secret: 'abcd'
+  secret: 'sannatour-secret'
+
+s3:
+  accessKeyId: AKIAJGJQQFZJ6XHI7Y2A
+  secretAccessKey: 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
+  region: us-east-2
+  bucketName: coffy-source
+  timeout: 300

@@ -1,6 +1,5 @@
-import * as bcrypt from "bcryptjs";
-// import * as Config from 'config';
-import { bcryptConfig } from "../config/bcrypt.config";
+import bcrypt from 'bcryptjs';
+import { bcryptConfig } from '../config/bcrypt.config';
 
 class Bcrypt {
   private saltRounds: number;

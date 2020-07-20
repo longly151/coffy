@@ -1,9 +1,9 @@
-import { getManager, TreeRepository } from "typeorm";
-import { NotFoundException } from "@nestjs/common";
-import * as _ from "lodash";
+import { getManager, TreeRepository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
+import _ from 'lodash';
 
 export class TreeBaseRepository<T> extends TreeRepository<T> {
-  entityName = _.replace(this.constructor.name, "Repository", "");
+  entityName = _.replace(this.constructor.name, 'Repository', '');
 
   async findOneByIdOrFail(id: number): Promise<T> {
     const found = await this.findOne(id);

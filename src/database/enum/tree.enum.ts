@@ -1,4 +1,4 @@
 export enum TreeLevel {
-  ROOT = "ROOT",
-  NODE = "NODE",
+  ROOT = 'ROOT',
+  NODE = 'NODE',
 }

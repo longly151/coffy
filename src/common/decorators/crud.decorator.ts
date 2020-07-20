@@ -1,48 +1,45 @@
-import { applyDecorators } from "@nestjs/common";
-import { Crud } from "@nestjsx/crud";
-import * as _ from "lodash";
-import { ACL } from "./acl.decorator";
-import { AccessControlList } from "../enums/accessControlList";
+import { applyDecorators } from '@nestjs/common';
+import { Crud } from '@nestjsx/crud';
+import _ from 'lodash';
+import { CrudName } from '@common/enums/crudName.enum';
+import { Name } from './crudName.decorator';
 
 export function UseCrud(entity: any, options?: any) {
+  const excludeRoute = options?.routes ? options.routes.exclude : [
+    'getOneBase',
+    'replaceOneBase',
+    'deleteOneBase'
+  ];
+
   return applyDecorators(
     Crud(
       _.merge(
         {
           model: {
-            type: entity,
+            type: entity
           },
           routes: {
-            exclude: [
-              "getOneBase",
-              "createManyBase",
-              "replaceOneBase",
-              "deleteOneBase",
-            ],
+            exclude: excludeRoute,
             getManyBase: {
-              decorators: [ACL(AccessControlList.DEFAULT)],
+              decorators: [Name(CrudName.GET_MANY)]
               // interceptors: [AuthorFilterInterceptor]
             },
             createOneBase: {
-              decorators: [ACL(AccessControlList.DEFAULT)],
+              decorators: [Name(CrudName.CREATE_ONE)]
             },
             createManyBase: {
-              decorators: [ACL(AccessControlList.DEFAULT)],
+              decorators: [Name(CrudName.CREATE_MANY)]
             },
             updateOneBase: {
-              decorators: [ACL(AccessControlList.DEFAULT)],
-              allowParamsOverride: true,
-            },
-            deleteOneBase: {
-              decorators: [ACL(AccessControlList.DEFAULT)],
-              returnDeleted: true,
-            },
+              decorators: [Name(CrudName.UPDATE_ONE)],
+              allowParamsOverride: true
+            }
           },
           query: {
             limit: 10,
             maxLimit: 50,
-            alwaysPaginate: true,
-          },
+            alwaysPaginate: true
+          }
           // params: {
           //   id: {
           //     primary: true,

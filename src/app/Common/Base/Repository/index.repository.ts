@@ -1,9 +1,9 @@
-import { Repository, getManager } from "typeorm";
-import { NotFoundException } from "@nestjs/common";
-import * as _ from "lodash";
+import { Repository, getManager } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
+import _ from 'lodash';
 
 export class BaseRepository<T> extends Repository<T> {
-  entityName = _.replace(this.constructor.name, "Repository", "");
+  entityName = _.replace(this.constructor.name, 'Repository', '');
 
   async findOneByIdOrFail(id: number): Promise<T> {
     const found = await this.findOne(id);

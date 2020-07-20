@@ -2,19 +2,18 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
-  HttpException,
-  InternalServerErrorException
+  HttpException
 } from '@nestjs/common';
-import * as _ from 'lodash';
+import _ from 'lodash';
 /**
- * Handle Error (After getting error from vaidation.pipe)
+ * Handle Error (After getting error from validation.pipe)
  */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    // const request = ctx.getRequest();
     const statusCode = exception.getStatus();
     const exceptionResponse: any = exception.getResponse();
 
@@ -56,30 +55,30 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
       : '';
 
     switch (statusCode) {
-    case 401:
-      response.status(statusCode).json({
-        statusCode,
-        message: customMessage || 'Missing authentication',
-        error: 'Unauthorized'
-      });
-      break;
-    case 403:
-      response.status(statusCode).json({
-        statusCode,
-        message: customMessage || 'Forbidden resource',
-        error: 'Forbidden'
-      });
-      break;
-    case 500:
-      response.status(statusCode).json({
-        statusCode,
-        message: customMessage || 'An internal server error occurred',
-        error: 'Internal Server Error'
-      });
-      break;
-    default:
-      response.status(statusCode).json(exception.getResponse());
-      break;
+      case 401:
+        response.status(statusCode).json({
+          statusCode,
+          message: customMessage || 'Missing authentication',
+          error: 'Unauthorized'
+        });
+        break;
+      case 403:
+        response.status(statusCode).json({
+          statusCode,
+          message: customMessage || 'Forbidden resource',
+          error: 'Forbidden'
+        });
+        break;
+      case 500:
+        response.status(statusCode).json({
+          statusCode,
+          message: customMessage || 'An internal server error occurred',
+          error: 'Internal Server Error'
+        });
+        break;
+      default:
+        response.status(statusCode).json(exception.getResponse());
+        break;
     }
   }
 }
