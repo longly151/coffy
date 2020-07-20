@@ -5,7 +5,7 @@ db:
   host: '127.0.0.1'
   port: 5432
   type: 'postgres'
-  database: 'sannatour-test'
+  database: 'coffy-test'
   username: 'postgres'
   password: 'admin'
   synchronize: true
@@ -15,4 +15,4 @@ bcrypt:
 
 jwt: 
   expiresIn: 5184000s
-  secret: 'sannatour-secret'
+  secret: 'coffy-secret'
