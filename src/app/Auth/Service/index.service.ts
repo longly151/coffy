@@ -29,7 +29,7 @@ export class AuthService {
       payload.role.permissions,
       'name'
     );
-    throw new HttpException({
+    throw new HttpException({ data: {
       token: this.jwtService.sign({
         id: payload.id,
         email: payload.email,
@@ -52,6 +52,6 @@ export class AuthService {
       phone: payload.phone,
       avatar: payload.avatar,
       role: payload.role.name
-    }, HttpStatus.OK);
+    } }, HttpStatus.OK);
   }
 }

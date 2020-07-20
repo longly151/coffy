@@ -7,7 +7,7 @@ db:
   type: 'postgres'
   database: 'coffy'
   username: 'postgres'
-  password: 'doanvxlnhom9'
+  password: 'admin'
   synchronize: true
 
 bcrypt:
