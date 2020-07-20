@@ -4,4 +4,4 @@ rm .env.example .env.staging .editorconfig README.md
 
 rsync -avzP . ubuntu@3.23.87.196:/home/coffy
 
-ssh ubuntu@3.23.87.196 "cd /home/coffy && npm install && pm2 update && exit"
+ssh ubuntu@3.23.87.196 "cd /home/coffy && npm install && sudo pm2 update && exit"

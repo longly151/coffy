@@ -1,6 +1,8 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import Config from 'config';
 
+require('dotenv').config({ path: process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env' });
+
 const dbConfig = Config.get('db');
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
