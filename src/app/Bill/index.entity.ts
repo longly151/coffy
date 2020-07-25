@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMan
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNotEmpty, IsString, IsInt, Min, IsNumber, Validate, IsEmpty } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
-import { IsBillDetails } from '../../common/validation/IsBillDetails.validation';
+import { IsBillDetails } from '../../common/validation/isBillDetails.validation';
 import { BillDetail } from '../../common/type/billDetail.type';
 import { ProductBill } from '../ProductBill/index.entity';
 import { Base } from '../Common/Base/index.entity';
