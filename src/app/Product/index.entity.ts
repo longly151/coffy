@@ -118,6 +118,7 @@ export class Product extends Base {
   @Column()
   categoryId: number;
 
+  @ApiProperty({ readOnly: true })
   @OneToMany(() => ProductBill, productBill => productBill.product)
     productBills: ProductBill[];
 }

@@ -4,7 +4,6 @@ import { IsOptional, IsNotEmpty, IsString, IsInt, Min, IsNumber } from 'class-va
 import { CrudValidationGroups } from '@nestjsx/crud';
 import { ProductBill } from '../ProductBill/index.entity';
 import { Base } from '../Common/Base/index.entity';
-import { Product } from '../Product/index.entity';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
@@ -61,6 +60,7 @@ export class Bill extends Base {
   /**
    * Relations
    */
-  @OneToMany(() => ProductBill, productBill => productBill.bill)
+  @ApiProperty({ readOnly: true })
+  @OneToMany(() => ProductBill, productBill => productBill.bill, { eager: true })
     productBills: ProductBill[];
 }
