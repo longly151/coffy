@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import {
   Override,
   ParsedRequest,
@@ -6,7 +6,7 @@ import {
   ParsedBody,
   CreateManyDto
 } from '@nestjsx/crud';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { UseCrud } from '@common/decorators/crud.decorator';
 import { Name } from '@common/decorators/crudName.decorator';
 import { TreeBaseController } from '@app/Common/TreeBase/Controller/index.controller';
@@ -49,4 +49,11 @@ export class CategoryController extends BaseController<Category> {
   /**
    * Custom Method
    */
+
+  @Name(CrudName.GET_ONE)
+  @ApiOperation({ summary: 'Get one Record by Slug' })
+  @Get(':slug')
+  async GetOneBaseBySlug(@Param('slug') slug: string): Promise<Category> {
+    return this.baseRepository.findOneBySlugOrFail(slug);
+  }
 }

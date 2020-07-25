@@ -233,6 +233,7 @@ export class BaseController<T> implements CrudController<T> {
    */
 
   @Name(CrudName.GET_ONE)
+  @ApiOperation({ summary: 'Get one Record by Slug' })
   async GetOneBaseBySlug(@Param('slug') slug: string): Promise<T> {
     return this.baseRepository.findOneBySlugOrFail(slug);
   }

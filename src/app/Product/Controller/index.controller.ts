@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { BaseController } from '@app/Common/Base/Controller/index.controller';
 import { UseCrud } from '@common/decorators/crud.decorator';
 import { Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto } from '@nestjsx/crud';
@@ -48,6 +48,14 @@ export class ProductController extends BaseController<Product> {
 
   @Name(CrudName.UPDATE_ONE) @Override('updateOneBase')
   async updateOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Product) { return this.updateOneOverride(req, dto); }
+
+
+  @Name(CrudName.GET_ONE)
+  @ApiOperation({ summary: 'Get one Record by Slug' })
+  @Get(':slug')
+  async GetOneBaseBySlug(@Param('slug') slug: string): Promise<Product> {
+    return this.baseRepository.findOneBySlugOrFail(slug);
+  }
 
   /**
    * Custom Method

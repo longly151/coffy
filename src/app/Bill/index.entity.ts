@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsNotEmpty, IsString, IsInt } from 'class-validator';
+import { IsOptional, IsNotEmpty, IsString, IsInt, Min, IsNumber } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
 import { Base } from '../Common/Base/index.entity';
 import { Product } from '../Product/index.entity';
@@ -59,6 +59,12 @@ export class Bill extends Base {
   /**
    * Relations
    */
+
+  @IsOptional()
+  @ApiProperty({ writeOnly: true, example: [1, 2] })
+  @IsNumber({}, { each: true })
+  @Min(1, { each: true })
+  productIds: Array<number>;
 
   @ApiProperty({ readOnly: true })
   @ManyToMany((type) => Product, (product) => product.bills, {
