@@ -18,10 +18,9 @@ import {
   IsIn
 } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
-import { Post } from '../Post/index.entity';
+import { Product } from '../Product/index.entity';
 import { enumToArray } from '../../core/utils/helper';
 import { TreeBase } from '../Common/TreeBase/index.entity';
-import { PostStatus } from '../../common/enums/postStatus.enum';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
@@ -59,54 +58,12 @@ export class Category extends TreeBase {
   @IsOptional()
   @IsString()
   @Column({ nullable: true })
-  description: string;
-
-  @ApiProperty({
-    example: 'My Example',
-    description: 'This field is only used as an example'
-  })
-  @IsOptional()
-  @IsString()
-  @Column({ nullable: true })
-  content: string;
-
-  @ApiProperty({
-    example: 'My Example',
-    description: 'This field is only used as an example'
-  })
-  @IsOptional()
-  @IsString()
-  @Column({ nullable: true })
   thumbnail: string;
-
-  @ApiProperty({
-    example: 'ACTIVE',
-    description: 'This field is only used as an example'
-  })
-  @IsOptional()
-  @IsIn(enumToArray(PostStatus))
-  @Column({ default: 'ACTIVE' })
-  status: string;
-
-  /**
-   * Self Relations
-   */
-  @ApiProperty({ readOnly: true })
-  @IsOptional()
-  @IsEmpty()
-  @TreeParent()
-  parentItem: Category;
-
-  @ApiProperty({ readOnly: true })
-  @IsOptional()
-  @IsEmpty()
-  @TreeChildren({ cascade: true })
-  childrenItems: Category[];
 
   /**
    * Relations
    */
   @ApiProperty({ readOnly: true, writeOnly: true })
-  @OneToMany((type) => Post, (post) => post.category, { eager: false })
-  posts: Post[];
+  @OneToMany((type) => Product, (product) => product.category, { eager: false })
+  products: Product[];
 }

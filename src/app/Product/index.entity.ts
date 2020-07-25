@@ -5,16 +5,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNotEmpty, IsString, IsInt, IsIn } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
 import _ from 'lodash';
-import { PostStatus } from '../../common/enums/postStatus.enum';
 import { createSlug, createSlugWithDateTime, enumToArray } from '../../core/utils/helper';
 import { Base } from '../Common/Base/index.entity';
 import { Category } from '../Category/index.entity';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
-@Entity('posts')
+@Entity('products')
 @Unique(['slug'])
-export class Post extends Base {
+export class Product extends Base {
   @ApiProperty({ readOnly: true })
   @PrimaryGeneratedColumn()
   id: number;
@@ -65,15 +64,6 @@ export class Post extends Base {
   @Column({ nullable: true })
   thumbnail: string;
 
-  @ApiProperty({
-    example: 'ACTIVE',
-    description: 'This field is only used as an example'
-  })
-  @IsOptional()
-  @IsIn(enumToArray(PostStatus))
-  @Column({ default: 'ACTIVE' })
-  status: string;
-
   /**
    * Trigger
    */
@@ -87,7 +77,7 @@ export class Post extends Base {
 
   @BeforeUpdate()
   async slugifyUpdate() {
-    const repository = await Post.getRepository();
+    const repository = await Product.getRepository();
     const dbObject = await repository.findOne(this.id);
     if (this.slug && this.slug === dbObject.slug) {
       const dbName = dbObject['title'] || dbObject['name'];
@@ -108,7 +98,7 @@ export class Post extends Base {
    * Relations
    */
   @ApiProperty({ readOnly: true })
-  @ManyToOne((type) => Category, (category) => category.posts, { eager: true })
+  @ManyToOne((type) => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 

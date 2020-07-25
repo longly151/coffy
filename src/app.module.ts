@@ -5,7 +5,7 @@ import { UserModule } from '@app/User/index.module';
 import { RoleModule } from '@app/Role/index.module';
 import { PermissionModule } from '@app/Permission/index.module';
 import { MediaModule } from '@app/Media/index.module';
-import { PostModule } from '@app/Post/index.module';
+import { ProductModule } from '@app/Product/index.module';
 import { CategoryModule } from '@app/Category/index.module';
 import { CoreModule } from './core/core.module';
 import { AppController } from './app.controller';
@@ -21,7 +21,7 @@ import { typeOrmConfig } from './config/typeorm.config';
     UserModule,
     MediaModule,
     CategoryModule,
-    PostModule
+    ProductModule
   ],
   controllers: [AppController]
 })

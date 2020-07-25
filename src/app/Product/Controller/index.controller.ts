@@ -6,9 +6,9 @@ import { Override, ParsedRequest, CrudRequest, ParsedBody, CreateManyDto } from 
 import { CrudName } from '@common/enums/crudName.enum';
 import { Name } from '@common/decorators/crudName.decorator';
 import { ApplyAuth } from '@common/decorators/applyAuth.decorator';
-import { PostRepository } from '../Repository/index.repository';
-import { PostService } from '../Service/index.service';
-import { Post } from '../index.entity';
+import { ProductRepository } from '../Repository/index.repository';
+import { ProductService } from '../Service/index.service';
+import { Product } from '../index.entity';
 
 @ApplyAuth(
   CrudName.GET_TRASHED,
@@ -19,7 +19,7 @@ import { Post } from '../index.entity';
   CrudName.DELETE_ONE_PERMANENTLY,
   CrudName.RESTORE_ONE
 )
-@UseCrud(Post, {
+@UseCrud(Product, {
   query: {
     join: {
       category: {
@@ -30,10 +30,10 @@ import { Post } from '../index.entity';
   }
 })
 
-@ApiTags('posts')
-@Controller('posts')
-export class PostController extends BaseController<Post> {
-  constructor(public service: PostService, private readonly repository: PostRepository) {
+@ApiTags('products')
+@Controller('products')
+export class ProductController extends BaseController<Product> {
+  constructor(public service: ProductService, private readonly repository: ProductRepository) {
     super(repository);
   }
 
@@ -41,13 +41,13 @@ export class PostController extends BaseController<Post> {
    * Override CRUD Method
    */
   @Name(CrudName.CREATE_ONE) @Override('createOneBase')
-  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Post) { return this.createOneOverride(req, dto); }
+  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Product) { return this.createOneOverride(req, dto); }
 
   @Name(CrudName.CREATE_MANY) @Override('createManyBase')
-  async createMany(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: CreateManyDto<Post>) { return this.createManyOverride(req, dto); }
+  async createMany(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: CreateManyDto<Product>) { return this.createManyOverride(req, dto); }
 
   @Name(CrudName.UPDATE_ONE) @Override('updateOneBase')
-  async updateOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Post) { return this.updateOneOverride(req, dto); }
+  async updateOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Product) { return this.updateOneOverride(req, dto); }
 
   /**
    * Custom Method
