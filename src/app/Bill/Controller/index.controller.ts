@@ -9,7 +9,28 @@ import { BillRepository } from '../Repository/index.repository';
 import { BillService } from '../Service/index.service';
 import { Bill } from '../index.entity';
 
-@UseCrud(Bill)
+@UseCrud(Bill, {
+  query: {
+    join: {
+      productBills: {
+        allow: ['billId', 'productId', 'pricePerUnit', 'quantity'],
+        eager: true
+      },
+      'productBills.product': {
+        eager: true
+      }
+    }
+  },
+  routes: {
+    exclude:
+    [
+      'getOneBase',
+      'createManyBase',
+      'replaceOneBase',
+      'deleteOneBase'
+    ]
+  }
+})
 @ApiTags('bills')
 @Controller('bills')
 export class BillController extends BaseController<Bill> {
@@ -21,10 +42,11 @@ export class BillController extends BaseController<Bill> {
    * Override CRUD Method
    */
   @Name(CrudName.CREATE_ONE) @Override('createOneBase')
-  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Bill) { return this.createOneOverride(req, dto); }
+  async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Bill) {
+    console.log('dto', dto);
 
-  @Name(CrudName.CREATE_MANY) @Override('createManyBase')
-  async createMany(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: CreateManyDto<Bill>) { return this.createManyOverride(req, dto); }
+    return this.createOneOverride(req, dto);
+  }
 
   @Name(CrudName.UPDATE_ONE) @Override('updateOneBase')
   async updateOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Bill) { return this.updateOneOverride(req, dto); }

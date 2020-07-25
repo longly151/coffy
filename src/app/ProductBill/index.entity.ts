@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, PrimaryColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNotEmpty, IsInt } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
@@ -10,18 +10,25 @@ const { CREATE, UPDATE } = CrudValidationGroups;
 
 @Entity('product_bills')
 export class ProductBill extends Base {
-  @ApiProperty()
-  @PrimaryGeneratedColumn()
+
+  @PrimaryColumn()
+  @ApiProperty({ example: 2 })
+  @IsInt()
+  @IsOptional({ groups: [UPDATE] })
+  @IsNotEmpty({ groups: [CREATE] })
   billId: number;
 
-  @ManyToOne(() => Bill, bill => bill.productBills)
+  @ManyToOne(() => Bill, bill => bill.productBills, { primary: true })
   bill: Bill;
 
-  @ApiProperty()
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
+  @ApiProperty({ example: 2 })
+  @IsInt()
+  @IsOptional({ groups: [UPDATE] })
+  @IsNotEmpty({ groups: [CREATE] })
   productId: number;
 
-  @ManyToOne(() => Product, product => product.productBills)
+  @ManyToOne(() => Product, product => product.productBills, { primary: true, eager: true })
   product: Product;
 
   @ApiProperty({ example: 2 })
@@ -30,7 +37,6 @@ export class ProductBill extends Base {
   @IsNotEmpty({ groups: [CREATE] })
   @Column()
   quantity: number;
-
 
   @ApiProperty({ example: 20000 })
   @IsInt()

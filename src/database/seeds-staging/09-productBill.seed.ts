@@ -3,13 +3,13 @@ import { Seeder, Factory } from 'typeorm-seeding';
 import { resolve } from 'path';
 import { convertCsvToJson, insertDbData } from '../../core/utils/appHelper';
 
-export default class CreateBills implements Seeder {
+export default class CreateProductBills implements Seeder {
   public async run(factory: Factory): Promise<void> {
-    const table = 'bills';
-    const fields = ['id', 'customerName', 'phone', 'subTotal', 'shippingFee'];
-    const numberTypeFields = ['id', 'subTotal', 'shippingFee'];
+    const table = 'product_bills';
+    const fields = ['billId', 'productId', 'quantity', 'pricePerUnit'];
+    const numberTypeFields = ['billId', 'productId', 'quantity', 'pricePerUnit'];
     const nullableFields = [];
-    const filepath = resolve(__dirname, 'data', 'bill.csv');
+    const filepath = resolve(__dirname, 'data', 'productBill.csv');
     const fetchData = await convertCsvToJson(filepath);
     await insertDbData(table, fields, numberTypeFields, nullableFields, fetchData);
   }
