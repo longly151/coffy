@@ -12,6 +12,7 @@ import { Name } from '@common/decorators/crudName.decorator';
 import { TreeBaseController } from '@app/Common/TreeBase/Controller/index.controller';
 import { CrudName } from '@common/enums/crudName.enum';
 import { ApplyAuth } from '@common/decorators/applyAuth.decorator';
+import { BaseController } from '@base/Controller/index.controller';
 import { Category } from '../index.entity';
 import { CategoryService } from '../Service/index.service';
 import { CategoryRepository } from '../Repository/index.repository';
@@ -25,14 +26,10 @@ import { CategoryRepository } from '../Repository/index.repository';
   CrudName.DELETE_ONE_PERMANENTLY,
   CrudName.RESTORE_ONE
 )
-@UseCrud(Category, {
-  routes: {
-    exclude: ['getManyBase', 'getOneBase', 'replaceOneBase', 'deleteOneBase']
-  }
-})
+@UseCrud(Category)
 @ApiTags('categories')
 @Controller('categories')
-export class CategoryController extends TreeBaseController<Category> {
+export class CategoryController extends BaseController<Category> {
   constructor(public service: CategoryService, private readonly repository: CategoryRepository) {
     super(repository);
   }

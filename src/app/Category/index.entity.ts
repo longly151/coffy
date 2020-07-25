@@ -20,14 +20,13 @@ import {
 import { CrudValidationGroups } from '@nestjsx/crud';
 import { Product } from '../Product/index.entity';
 import { enumToArray } from '../../core/utils/helper';
-import { TreeBase } from '../Common/TreeBase/index.entity';
+import { Base } from '../Common/Base/index.entity';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
 @Entity('categories')
-@Tree('materialized-path')
 @Unique(['slug'])
-export class Category extends TreeBase {
+export class Category extends Base {
   @ApiProperty({ readOnly: true })
   @PrimaryGeneratedColumn()
   id: number;
