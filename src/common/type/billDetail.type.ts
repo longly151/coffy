@@ -7,10 +7,7 @@ export class BillDetail {
   @IsInt()
   quantity: number;
 
-  @IsInt()
-  pricePerUnit: number;
-
   static stringify(){
-    return JSON.stringify({ productId: 'number', quantity: 'number', pricePerUnit: 'number' });
+    return JSON.stringify({ productId: 'number', quantity: 'number' });
   }
 }
