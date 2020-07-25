@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable dot-notation */
-import { Entity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, ManyToMany, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNotEmpty, IsString, IsInt, IsIn } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
 import _ from 'lodash';
+import { ProductBill } from '../ProductBill/index.entity';
 import { createSlug, createSlugWithDateTime, enumToArray } from '../../core/utils/helper';
 import { Base } from '../Common/Base/index.entity';
 import { Category } from '../Category/index.entity';
@@ -65,6 +66,13 @@ export class Product extends Base {
   @Column({ nullable: true })
   thumbnail: string;
 
+  @ApiProperty({ example: 20000 })
+  @IsInt()
+  @IsOptional({ groups: [UPDATE] })
+  @IsNotEmpty({ groups: [CREATE] })
+  @Column()
+  price: number;
+
   /**
    * Trigger
    */
@@ -110,7 +118,6 @@ export class Product extends Base {
   @Column()
   categoryId: number;
 
-  @ApiProperty({ readOnly: true })
-  @ManyToMany((type) => Bill, (bill) => bill.products)
-  bills: Bill[];
+  @OneToMany(() => ProductBill, productBill => productBill.product)
+    productBills: ProductBill[];
 }

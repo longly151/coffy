@@ -141,8 +141,6 @@ export class User extends Base {
   @Column()
   roleId: number;
 
-  // @OneToMany((type) => Pet, (pet) => pet.user)
-  // pets: Pet[]
 
   /**
    * Trigger

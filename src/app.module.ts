@@ -7,6 +7,8 @@ import { PermissionModule } from '@app/Permission/index.module';
 import { MediaModule } from '@app/Media/index.module';
 import { ProductModule } from '@app/Product/index.module';
 import { CategoryModule } from '@app/Category/index.module';
+import { ProductBillModule } from '@app/ProductBill/index.module';
+import { BillModule } from '@app/Bill/index.module';
 import { CoreModule } from './core/core.module';
 import { AppController } from './app.controller';
 import { typeOrmConfig } from './config/typeorm.config';
@@ -21,7 +23,9 @@ import { typeOrmConfig } from './config/typeorm.config';
     UserModule,
     MediaModule,
     CategoryModule,
-    ProductModule
+    ProductModule,
+    ProductBillModule,
+    BillModule
   ],
   controllers: [AppController]
 })
