@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable dot-notation */
-import { Entity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsNotEmpty, IsString, IsInt, IsIn } from 'class-validator';
 import { CrudValidationGroups } from '@nestjsx/crud';
@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { createSlug, createSlugWithDateTime, enumToArray } from '../../core/utils/helper';
 import { Base } from '../Common/Base/index.entity';
 import { Category } from '../Category/index.entity';
+import { Bill } from '../Bill/index.entity';
 
 const { CREATE, UPDATE } = CrudValidationGroups;
 
@@ -108,4 +109,8 @@ export class Product extends Base {
   @IsNotEmpty({ groups: [CREATE] })
   @Column()
   categoryId: number;
+
+  @ApiProperty({ readOnly: true })
+  @ManyToMany((type) => Bill, (bill) => bill.products)
+  bills: Bill[];
 }
