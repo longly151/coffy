@@ -15,15 +15,23 @@ export default class CreateRoles implements Seeder {
         },
         {
           roleId: 2,
-          permissionId: 2
+          permissionId: 20
         },
         {
           roleId: 2,
-          permissionId: 3
+          permissionId: 21
         },
         {
           roleId: 2,
-          permissionId: 4
+          permissionId: 22
+        },
+        {
+          roleId: 2,
+          permissionId: 23
+        },
+        {
+          roleId: 2,
+          permissionId: 24
         },
         {
           roleId: 3,
