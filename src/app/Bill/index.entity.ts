@@ -64,7 +64,7 @@ export class Bill extends Base {
     readOnly: true
   })
   @IsEmpty()
-  @Column({ default: BillStatus.DONE })
+  @Column({ default: BillStatus.PENDING })
   status: string;
 
   /**
