@@ -15,6 +15,26 @@ export default class CreateRoles implements Seeder {
         },
         {
           roleId: 2,
+          permissionId: 3
+        },
+        {
+          roleId: 2,
+          permissionId: 13
+        },
+        {
+          roleId: 2,
+          permissionId: 17
+        },
+        {
+          roleId: 2,
+          permissionId: 18
+        },
+        {
+          roleId: 2,
+          permissionId: 19
+        },
+        {
+          roleId: 2,
           permissionId: 20
         },
         {
@@ -32,6 +52,14 @@ export default class CreateRoles implements Seeder {
         {
           roleId: 2,
           permissionId: 24
+        },
+        {
+          roleId: 2,
+          permissionId: 25
+        },
+        {
+          roleId: 2,
+          permissionId: 26
         },
         {
           roleId: 3,
