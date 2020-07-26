@@ -52,7 +52,7 @@ export class ProductController extends BaseController<Product> {
 
   @Name(CrudName.GET_ONE)
   @ApiOperation({ summary: 'Get one Record by Slug' })
-  @Get(':slug')
+  @Get('slug-:slug')
   async GetOneBaseBySlug(@Param('slug') slug: string): Promise<Product> {
     return this.baseRepository.findOneBySlugOrFail(slug);
   }

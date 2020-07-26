@@ -1,4 +1,4 @@
-import { Controller, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, ConflictException, InternalServerErrorException, Post, ParseIntPipe, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BaseController } from '@app/Common/Base/Controller/index.controller';
 import { UseCrud } from '@common/decorators/crud.decorator';
@@ -10,6 +10,7 @@ import _ from 'lodash';
 import { BillDetail } from '@common/type/billDetail.type';
 import { getManager, getConnection } from 'typeorm';
 import { ProductRepository } from '@app/Product/Repository/index.repository';
+import { BillStatus } from '@common/enums/billStatus.enum';
 import { BillRepository } from '../Repository/index.repository';
 import { BillService } from '../Service/index.service';
 import { Bill } from '../index.entity';
@@ -97,4 +98,15 @@ export class BillController extends BaseController<Bill> {
   /**
    * Custom Method
    */
+  @Name(CrudName.CREATE_ONE) @Post(':id/done')
+  async checkDone(@Param('id', ParseIntPipe) id: number) {
+    try {
+      let dbObject: any = await this.repository.findOneByIdOrFail(id);
+      dbObject.status = BillStatus.DONE;
+      dbObject = _.omit(dbObject, 'productBills');
+      return this.repository.save(dbObject);
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
 }
