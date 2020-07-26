@@ -2,15 +2,13 @@ import {
   Controller,
   Param,
   ParseIntPipe,
-  BadRequestException,
-  Post,
-  Patch
+  BadRequestException
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { BaseController } from '@app/Common/Base/Controller/index.controller';
 import { UseCrud } from '@common/decorators/crud.decorator';
 import { Name } from '@common/decorators/crudName.decorator';
-import { ParsedBody } from '@nestjsx/crud';
+import { ParsedBody, Override } from '@nestjsx/crud';
 import { UserRepository } from '@app/User/Repository/index.repository';
 import { CrudName } from '@common/enums/crudName.enum';
 import { ApplyAuth } from '@common/decorators/applyAuth.decorator';
@@ -23,9 +21,7 @@ import { Role } from '../index.entity';
   routes: {
     exclude: [
       'getOneBase',
-      'createOneBase',
       'createManyBase',
-      'updateOneBase',
       'replaceOneBase',
       'deleteOneBase'
     ]
@@ -60,9 +56,9 @@ export class RoleController extends BaseController<Role> {
    * @param dto Destination
    */
   @Name(CrudName.CREATE_ONE)
+  @Override('createOneBase')
   @ApiOperation({ summary: 'Create one Role ' })
-  @Post()
-  async createOneRole(@ParsedBody() dto: Role) {
+  async createOne(@ParsedBody() dto: Role) {
     const dbObject = new Role();
     return this.service.saveObject(dbObject, dto);
   }
@@ -74,8 +70,8 @@ export class RoleController extends BaseController<Role> {
    */
   @Name(CrudName.UPDATE_ONE)
   @ApiOperation({ summary: 'Update one Role ' })
-  @Patch(':id')
-  async updateOneRole(
+  @Override('updateOneBase')
+  async updateOne(
     @ParsedBody() dto: Role,
     @Param('id', ParseIntPipe) id: number
   ) {
