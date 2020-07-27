@@ -6,7 +6,7 @@ import { convertCsvToJson, insertDbData } from '../../core/utils/appHelper';
 export default class CreateBills implements Seeder {
   public async run(factory: Factory): Promise<void> {
     const table = 'bills';
-    const fields = ['id', 'customerName', 'phone', 'subTotal', 'shippingFee'];
+    const fields = ['id', 'customerName', 'phone', 'subTotal', 'shippingFee', 'note', 'detail'];
     const numberTypeFields = ['id', 'subTotal', 'shippingFee'];
     const nullableFields = [];
     const filepath = resolve(__dirname, 'data', 'bill.csv');

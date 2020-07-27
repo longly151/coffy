@@ -1,5 +1,5 @@
-id,customerName,phone,subTotal,shippingFee
-1,Nguyễn Trung Đô,0905554445,112000,10000
-2,Lê Phan Tấn,0905778876,172000,15000
-3,Lê Việt Long,0903918819,233000,25000
-4,Ngyễn Hữu Nguyên Ý,0773288148,162000,25000
+id,customerName,phone,subTotal,shippingFee,note
+1,Nguyễn Trung Đô,0905554445,112000,10000,15 Le Duan
+2,Lê Phan Tấn,0905778876,172000,15000,25 Ong Ich Khiem
+3,Lê Việt Long,0903918819,233000,25000,40 Tran Phu
+4,Ngyễn Hữu Nguyên Ý,0773288148,162000,25000, 44 Dien Bien Phu

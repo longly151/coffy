@@ -51,6 +51,25 @@ export class BillController extends BaseController<Bill> {
   /**
    * Override CRUD Method
    */
+  @Override()
+  async getMany(
+    @ParsedRequest() req: CrudRequest
+  ) {
+    const items: any = await this.base.getManyBase(req);
+    items.data.map(((item: any) => {
+      let detail = '';
+      item.productBills.map((productBill: any) => {
+        const { pricePerUnit } = productBill;
+        const { quantity } = productBill;
+        const { product: { title } } = productBill;
+        detail += `${quantity} ${title} (Đơn giá: ${pricePerUnit}), `;
+      });
+      detail = _.trim(detail, ', ');
+      item.detail = detail;
+    }));
+    return items;
+  }
+
   @Name(CrudName.CREATE_ONE) @Override('createOneBase')
   async createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Bill) {
     try {
