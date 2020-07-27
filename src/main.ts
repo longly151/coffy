@@ -37,8 +37,8 @@ async function bootstrap() {
    * Swagger
    */
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Sanna Tour API')
-    .setDescription('The Sanna Tour API description')
+    .setTitle('Coffy Tour API')
+    .setDescription('The Coffy Tour API description')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
