@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NestFactory } from '@nestjs/core';
 import {
   DocumentBuilder,
@@ -66,7 +67,6 @@ async function bootstrap() {
    */
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
-  // eslint-disable-next-line no-console
   console.log(`Application listening on port ${port}`);
 }
 bootstrap();
